@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart File Compression Workbench</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">DAA • Greedy Algorithms</p>
+        <h1>Smart File Compression <span>Workbench</span></h1>
+        <p class="subtitle">Explore Huffman coding, measure its performance, and verify lossless restoration of every byte.</p>
+      </div>
+      <div class="complexity">
+        <strong>Huffman complexity</strong>
+        <code>O(n + k log k)</code>
+        <small>n = input bytes • k ≤ 256 symbols</small>
+      </div>
+    </header>
+
+    <section class="panel controls">
+      <div class="drop-zone" id="drop-zone">
+        <input id="file-input" type="file" hidden>
+        <div class="upload-icon">↑</div>
+        <h2 id="file-title">Choose a file to analyze</h2>
+        <p id="file-meta">Drag and drop, or click to browse • Maximum {{ max_upload_mb }} MB</p>
+        <button class="button secondary" id="browse-button" type="button">Browse files</button>
+      </div>
+      <div class="action-row">
+        <button class="button primary" id="compress-button" disabled>Compress with Huffman</button>
+        <button class="button secondary" id="benchmark-button" disabled>Run benchmark</button>
+      </div>
+      <div id="status" class="status" role="status"></div>
+    </section>
+
+    <section id="results" class="hidden">
+      <div class="section-heading">
+        <div><p class="eyebrow">Measured result</p><h2>Compression dashboard</h2></div>
+        <a id="download-link" class="button download" href="#" download>Download .huff</a>
+      </div>
+      <div class="metrics">
+        <article class="metric"><span>Original size</span><strong id="original-size">—</strong></article>
+        <article class="metric"><span>Compressed size</span><strong id="compressed-size">—</strong></article>
+        <article class="metric accent"><span>Compression ratio</span><strong id="ratio">—</strong></article>
+        <article class="metric accent"><span>Space savings</span><strong id="savings">—</strong></article>
+        <article class="metric"><span>Execution time</span><strong id="elapsed">—</strong></article>
+        <article class="metric"><span>Integrity</span><strong id="integrity">Verified</strong></article>
+      </div>
+      <div class="grid">
+        <article class="panel">
+          <div class="section-heading compact"><h2>Generated codes</h2><span id="symbol-count"></span></div>
+          <div class="table-wrap"><table><thead><tr><th>Symbol</th><th>Frequency</th><th>Code</th></tr></thead><tbody id="codes"></tbody></table></div>
+        </article>
+        <article class="panel">
+          <div class="section-heading compact"><h2>How Huffman works</h2></div>
+          <ol class="steps">
+            <li><b>Count</b><span>Measure the frequency of every byte.</span></li>
+            <li><b>Greedy merge</b><span>Repeatedly join the two least frequent nodes using a min-heap.</span></li>
+            <li><b>Encode</b><span>Use root-to-leaf paths as prefix-free binary codes.</span></li>
+            <li><b>Verify</b><span>Decode the stream and compare bytes exactly.</span></li>
+          </ol>
+          <div class="tree-summary" id="tree-summary">Select a file to see its Huffman tree.</div>
+        </article>
+      </div>
+    </section>
+    <footer>Built for algorithmic learning • Custom byte-level Huffman implementation • No third-party compression library</footer>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
