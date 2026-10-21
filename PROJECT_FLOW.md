@@ -1,6 +1,43 @@
-# Smart File Compression Workbench
+# 🗜️ Smart File Compression Workbench
 
-## 1. One-minute explanation for the teacher
+<p align="center">
+  <strong>Explore • Compress • Measure • Verify</strong><br>
+  <em>A visual DAA project demonstrating greedy algorithms through lossless file compression.</em>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/DAA-Greedy%20Algorithm-2563EB?style=for-the-badge" alt="DAA Greedy Algorithm">
+  <img src="https://img.shields.io/badge/Algorithm-Huffman%20Coding-0F9F92?style=for-the-badge" alt="Huffman Coding">
+  <img src="https://img.shields.io/badge/Language-Python-3776AB?style=for-the-badge" alt="Python">
+  <img src="https://img.shields.io/badge/Interface-Flask-111827?style=for-the-badge" alt="Flask">
+</p>
+
+> 🎓 **Teacher-ready summary:** This project is not only a file compressor. It is an
+> interactive algorithm workbench that makes the greedy choice, priority queue,
+> Huffman tree, prefix codes, complexity, and measured performance visible.
+
+<table>
+<tr>
+<td align="center">📦<br><strong>Lossless</strong><br><sub>Exact byte restoration</sub></td>
+<td align="center">🌳<br><strong>Tree-based</strong><br><sub>Binary Huffman tree</sub></td>
+<td align="center">⚡<br><strong>Measured</strong><br><sub>Time and size metrics</sub></td>
+<td align="center">✅<br><strong>Verified</strong><br><sub>Integrity checking</sub></td>
+</tr>
+</table>
+
+### 🧭 Quick navigation
+
+| | Section | What it explains |
+|---|---|---|
+| 🎤 | [Teacher pitch](#1-one-minute-explanation-for-the-teacher) | How to introduce the project |
+| 🔄 | [Project flow](#2-complete-project-flow) | What happens from upload to download |
+| 🧩 | [Implementation map](#3-how-the-implementation-is-divided) | Role of every project file |
+| 🌳 | [Huffman algorithm](#4-huffman-implementation-step-by-step) | How the algorithm works |
+| 📊 | [DAA analysis](#6-daa-analysis-to-explain) | Complexity and greedy proof |
+| 🎬 | [Demo script](#7-demonstration-procedure) | How to present the application |
+| ❓ | [Viva questions](#8-questions-the-teacher-may-ask) | Short answers for evaluation |
+
+## 1. 🎤 One-minute explanation for the teacher
 
 Our project is a web-based file compression workbench based on **Huffman Coding**.
 Huffman Coding is a greedy algorithm that assigns shorter binary codes to frequent
@@ -8,11 +45,33 @@ bytes and longer codes to less frequent bytes. The application compresses arbitr
 files without losing data, decompresses the generated `.huff` file, verifies the
 restored bytes, and reports measurable performance statistics.
 
-The important DAA contribution is our own implementation of the frequency table,
+> ⭐ **Our DAA contribution:** We implement the frequency table,
 min-heap, Huffman tree, code generation, bit packing, and decoding. We do not use
 Python's `zipfile`, `gzip`, or another ready-made compression algorithm.
 
-## 2. Complete project flow
+## 2. 🔄 Complete project flow
+
+### Compression pipeline
+
+```mermaid
+flowchart TD
+    A([📁 Select / drop file]) --> B[🛡️ Flask validates upload]
+    B --> C[🔢 Count byte frequencies]
+    C --> D[🌱 Create Huffman leaf nodes]
+    D --> E[⛏️ Insert nodes into min-heap]
+    E --> F{More than one node?}
+    F -->|Yes| G[🤝 Merge two smallest nodes]
+    G --> E
+    F -->|No| H[🌳 Traverse final tree]
+    H --> I[🔤 Generate prefix-free codes]
+    I --> J[📦 Pack encoded bits]
+    J --> K[(💾 .huff metadata + payload)]
+    K --> L[📊 Calculate metrics]
+    L --> M([⬇️ Dashboard + download])
+```
+
+<details>
+<summary>📋 Open the detailed compression flow</summary>
 
 ```text
 User selects or drops a file
@@ -60,7 +119,27 @@ User selects or drops a file
        Return dashboard data and download link
 ```
 
-### Decompression flow
+</details>
+
+### Decompression pipeline
+
+```mermaid
+flowchart TD
+    A([📦 Upload .huff file]) --> B[🔍 Validate magic number and header]
+    B --> C[📖 Read original size + frequencies]
+    C --> D[🌳 Rebuild the same Huffman tree]
+    D --> E[🔡 Read payload bits left to right]
+    E --> F{Reached a leaf?}
+    F -->|No| E
+    F -->|Yes| G[➕ Append byte and return to root]
+    G --> H{Original size reached?}
+    H -->|No| E
+    H -->|Yes| I[✅ Validate padding and output]
+    I --> J([📄 Restore original bytes])
+```
+
+<details>
+<summary>📋 Open the detailed decompression flow</summary>
 
 ```text
 .huff file uploaded
@@ -87,22 +166,24 @@ Check payload length, padding, and output size
 Return original bytes and integrity_verified = true
 ```
 
-## 3. How the implementation is divided
+</details>
+
+## 3. 🧩 How the implementation is divided
 
 | File | Responsibility |
 |---|---|
-| `algorithms/huffman.py` | Core DAA algorithm: frequencies, min-heap, tree, codes, encoding, decoding, validation |
-| `services/benchmark.py` | Reusable compression/decompression timing for multiple files |
-| `app.py` | Flask routes, upload validation, metrics, downloads, and error responses |
-| `templates/index.html` | Dashboard structure and teacher-facing algorithm explanation |
-| `static/app.js` | File selection, API calls, result rendering, code-table rendering |
-| `static/style.css` | Responsive visual presentation |
-| `tests/test_huffman.py` | Correctness, edge cases, prefix property, and corruption tests |
-| `requirements.txt` | Flask and pytest dependencies |
+| 🧠 [`algorithms/huffman.py`](algorithms/huffman.py) | Core DAA algorithm: frequencies, min-heap, tree, codes, encoding, decoding, validation |
+| 📈 [`services/benchmark.py`](services/benchmark.py) | Reusable compression/decompression timing for multiple files |
+| 🌐 [`app.py`](app.py) | Flask routes, upload validation, metrics, downloads, and error responses |
+| 🖥️ [`templates/index.html`](templates/index.html) | Dashboard structure and teacher-facing algorithm explanation |
+| ⚙️ [`static/app.js`](static/app.js) | File selection, API calls, result rendering, code-table rendering |
+| 🎨 [`static/style.css`](static/style.css) | Responsive visual presentation |
+| 🧪 [`tests/test_huffman.py`](tests/test_huffman.py) | Correctness, edge cases, prefix property, and corruption tests |
+| 📦 [`requirements.txt`](requirements.txt) | Flask and pytest dependencies |
 
-## 4. Huffman implementation, step by step
+## 4. 🌳 Huffman implementation, step by step
 
-### Step 1: Frequency counting
+### ① Frequency counting
 
 The input is processed as `bytes`, not as text. A 256-element counter records the
 number of occurrences of every possible byte value. This supports text, images,
@@ -113,15 +194,15 @@ for each byte x in input:
     frequency[x] += 1
 ```
 
-Time: `O(n)`, where `n` is the number of input bytes.
+> ⏱️ **Time:** `O(n)`, where `n` is the number of input bytes.
 
-### Step 2: Build the min-heap
+### ② Build the min-heap
 
 Each distinct byte becomes a leaf node containing its frequency. Nodes are inserted
 into Python's binary heap, which provides the min-priority-queue operation required
 by Huffman's greedy method.
 
-### Step 3: Make the Huffman tree
+### ③ Make the Huffman tree
 
 ```text
 while heap contains more than one node:
@@ -133,10 +214,10 @@ while heap contains more than one node:
     insert parent into heap
 ```
 
-The two least frequent nodes are combined at every step. This is the greedy choice.
+> 🟣 **Greedy choice:** The two least frequent nodes are combined at every step.
 The final tree has one leaf for each distinct byte.
 
-### Step 4: Generate codes
+### ④ Generate codes
 
 The tree is traversed recursively:
 
@@ -149,13 +230,13 @@ This is the prefix-free property that makes decoding unambiguous.
 
 The single-symbol case receives code `0`, and empty input produces an empty tree.
 
-### Step 5: Encode bits
+### ⑤ Encode bits
 
 The input bytes are replaced using the generated code table. Bits are accumulated
 into groups of eight and stored as bytes. The final byte is padded with zero bits
 when necessary.
 
-### Step 6: Store metadata
+### ⑥ Store metadata
 
 The `.huff` format contains:
 
@@ -166,10 +247,10 @@ The `.huff` format contains:
 remaining bytes encoded Huffman payload
 ```
 
-The frequency table is deliberately included so the decoder can rebuild the tree
+> 💡 The frequency table is deliberately included so the decoder can rebuild the tree
 without needing the original input file or an in-memory object.
 
-## 5. Metrics shown by the application
+## 5. 📊 Metrics shown by the application
 
 Let:
 
@@ -181,14 +262,15 @@ Compression ratio = S_o / S_c
 Space savings     = ((S_o - S_c) / S_o) * 100
 ```
 
-The application reports the complete `.huff` size. Small files can become larger
+> ⚠️ **Important observation:** The application reports the complete `.huff` size.
+Small files can become larger
 because the metadata header is larger than the encoded payload. This is expected
 and is an important experimental observation.
 
 The benchmark also measures compression time, decompression time, and whether the
 decompressed data is exactly equal to the input.
 
-## 6. DAA analysis to explain
+## 6. 🧮 DAA analysis to explain
 
 For `n` input bytes and `k` distinct byte values:
 
@@ -205,6 +287,14 @@ For `n` input bytes and `k` distinct byte values:
 `B` is the number of encoded bits. Because the project uses a byte alphabet,
 `k` is at most 256, although the analysis is written for a general alphabet.
 
+### Complexity at a glance
+
+```text
+Input bytes (n) ──► Frequency counting ──► O(n)
+Distinct symbols (k) ──► Min-heap + tree ──► O(k log k)
+Encoded bits (B) ──► Decode ──► O(B)
+```
+
 ### Why the greedy choice works
 
 The two least frequent symbols can be placed at the deepest sibling leaves in an
@@ -213,20 +303,20 @@ equivalent problem. Repeating this reduction produces an optimal prefix code.
 This is the greedy-choice property and optimal-substructure argument behind
 Huffman Coding.
 
-## 7. Demonstration procedure
+## 7. 🎬 Demonstration procedure
 
-1. Start the server with `python app.py`.
-2. Open `http://127.0.0.1:5000`.
-3. Select a text file with repeated words.
-4. Click **Compress with Huffman**.
-5. Explain the original size, compressed size, ratio, space savings, timing, and
+1. 🚀 Start the server with `python app.py`.
+2. 🌐 Open `http://127.0.0.1:5000`.
+3. 📄 Select a text file with repeated words.
+4. 🗜️ Click **Compress with Huffman**.
+5. 📊 Explain the original size, compressed size, ratio, space savings, timing, and
    generated codes.
-6. Download the `.huff` file.
-7. Upload it to a decompression route/API if demonstrating the backend directly.
-8. Show that the restored output has `integrity_verified = true`.
-9. Repeat with a binary file or already-compressed file.
-10. Explain why the ratio may be poor for a small or already-compressed file.
-11. Run the test suite with `python -m pytest -q`.
+6. ⬇️ Download the `.huff` file.
+7. 🔁 Upload it to a decompression route/API if demonstrating the backend directly.
+8. ✅ Show that the restored output has `integrity_verified = true`.
+9. 🧪 Repeat with a binary file or already-compressed file.
+10. 💬 Explain why the ratio may be poor for a small or already-compressed file.
+11. 🧪 Run the test suite with `python -m pytest -q`.
 
 Useful API routes:
 
@@ -239,7 +329,7 @@ Useful API routes:
 | `POST` | `/api/benchmark` | Measure compression, decompression, and integrity |
 | `GET` | `/download/<token>` | Download a generated result |
 
-## 8. Questions the teacher may ask
+## 8. ❓ Questions the teacher may ask
 
 ### Why is Huffman Coding greedy?
 
@@ -273,7 +363,7 @@ The complexity describes how operations grow with input size. Measured time also
 depends on hardware, Python overhead, file content, memory, and operating-system
 load. The application reports both the theoretical analysis and actual timings.
 
-## 9. Current limitations and future work
+## 9. 🚀 Current limitations and future work
 
 - The current application limits uploads to 16 MB for safe local demonstrations.
 - The download store is memory-based and is intended for local academic use.
